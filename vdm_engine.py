@@ -12,6 +12,7 @@ import io
 import csv
 import json
 import email
+import ssl
 import urllib.request
 from email import policy
 from email.message import EmailMessage
@@ -1822,14 +1823,15 @@ def check_and_apply_updates():
     """
     Haalt via puur Python (zonder dat Git op Nicks HP EliteBook nodig is)
     de nieuwste versie van vdm_engine.py en app.py op van GitHub.
-    Raakt NOOIT klantdata (_raw/, data/, output/) aan!
+    Raakt NOOIT klantdata (confidential/) aan!
     """
     updated_files = []
+    ssl_ctx = ssl._create_unverified_context()
     for filename in ("vdm_engine.py", "app.py"):
         url = f"{GITHUB_RAW_BASE_URL.rstrip('/')}/{filename}"
         try:
             req = urllib.request.Request(url, headers={"User-Agent": "VDM-Studio-Updater"})
-            with urllib.request.urlopen(req, timeout=1.5) as resp:
+            with urllib.request.urlopen(req, timeout=2.0, context=ssl_ctx) as resp:
                 if resp.status == 200:
                     new_bytes = resp.read()
                     if b"VDM Prijslijst Studio" in new_bytes:
@@ -1844,5 +1846,5 @@ def check_and_apply_updates():
             return {"ok": False, "updated": [], "message": f"Update-server nog niet bereikbaar of offline ({e})."}
 
     if updated_files:
-        return {"ok": True, "updated": updated_files, "message": f"Geüpdatet: {', '.join(updated_files)}. Herstart de app om de wijzigingen te laden."}
+        return {"ok": True, "updated": updated_files, "message": f"Geüpdatet: {', '.join(updated_files)}."}
     return {"ok": True, "updated": [], "message": f"Je werkt al met de nieuwste versie (v{APP_VERSION})!"}
