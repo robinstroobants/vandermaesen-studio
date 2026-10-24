@@ -1,0 +1,22 @@
+# =====================================================================
+# STRIKTE VERTROUWELIJKHEIDS-FILTER VOOR VANDERMAESEN NV
+# Blokkeer ALTIJD alle klantdata, prijslijsten, bronbestanden en mails!
+# =====================================================================
+confidential/
+_raw/
+output/
+data/
+*.xlsx
+*.xls
+*.eml
+*.msg
+*.pdf
+!INSTALLATIE_HANDLEIDING_NICK.pdf
+*.csv
+*.zip
+
+# macOS / Windows / Python systeem-bestanden
+.DS_Store
+__pycache__/
+*.pyc
+.env
